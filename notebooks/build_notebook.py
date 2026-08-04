@@ -1,0 +1,101 @@
+"""Build the portfolio notebook without a notebook-specific dependency."""
+
+import json
+from pathlib import Path
+
+
+def markdown(text: str) -> dict:
+    return {"cell_type": "markdown", "metadata": {}, "source": text.splitlines(True)}
+
+
+def code(text: str) -> dict:
+    return {
+        "cell_type": "code",
+        "execution_count": None,
+        "metadata": {},
+        "outputs": [],
+        "source": text.splitlines(True),
+    }
+
+
+cells = [
+    markdown(
+        "# Customer Churn Analytics\n\n"
+        "Análise exploratória, segmentação de risco e recomendações de retenção. "
+        "Os dados são sintéticos e não representam clientes reais."
+    ),
+    markdown("## 1. Preparação do ambiente"),
+    code(
+        "from pathlib import Path\n"
+        "import pandas as pd\n"
+        "import seaborn as sns\n"
+        "import matplotlib.pyplot as plt\n\n"
+        "ROOT = Path.cwd().parent if Path.cwd().name == 'notebooks' else Path.cwd()\n"
+        "DATA = ROOT / 'data' / 'processed' / 'customer_churn_clean.csv'\n"
+        "df = pd.read_csv(DATA)\n"
+        "df.head()"
+    ),
+    markdown("## 2. Qualidade e visão geral"),
+    code(
+        "quality = pd.DataFrame({\n"
+        "    'tipo': df.dtypes.astype(str),\n"
+        "    'nulos': df.isna().sum(),\n"
+        "    'unicos': df.nunique(),\n"
+        "})\n"
+        "quality"
+    ),
+    code(
+        "kpis = {\n"
+        "    'clientes': len(df),\n"
+        "    'churn_rate': df['churn'].mean(),\n"
+        "    'mrr_ativo': df.loc[df.churn.eq(0), 'monthly_charges'].sum(),\n"
+        "    'receita_anual_em_risco': df.loc[df.churn.eq(1), 'annual_revenue'].sum(),\n"
+        "}\n"
+        "kpis"
+    ),
+    markdown("## 3. Diagnóstico dos principais segmentos"),
+    code(
+        "segment = (df.groupby(['contract', 'plan'], observed=True)\n"
+        "             .agg(clientes=('customer_id', 'count'),\n"
+        "                  churn_rate=('churn', 'mean'),\n"
+        "                  receita_em_risco=('revenue_at_risk', 'sum'))\n"
+        "             .sort_values('churn_rate', ascending=False))\n"
+        "segment.head(10)"
+    ),
+    code(
+        "order = df.groupby('contract')['churn'].mean().sort_values(ascending=False).index\n"
+        "sns.barplot(data=df, x='contract', y='churn', order=order, errorbar=None, color='#2563EB')\n"
+        "plt.title('Taxa de churn por contrato')\n"
+        "plt.ylabel('Churn')\n"
+        "plt.xlabel('')\n"
+        "plt.show()"
+    ),
+    markdown("## 4. Lista de clientes para ação preventiva"),
+    code(
+        "priority = (df.query(\"churn == 0 and risk_segment == 'Alto'\")\n"
+        "              .sort_values(['risk_score', 'annual_revenue'], ascending=False))\n"
+        "priority[['customer_id', 'plan', 'contract', 'nps', 'risk_score', 'annual_revenue']].head(20)"
+    ),
+    markdown(
+        "## 5. Recomendações\n\n"
+        "1. Priorizar clientes mensais de alto risco nos primeiros seis meses.\n"
+        "2. Criar acionamento após o terceiro chamado de suporte.\n"
+        "3. Testar incentivo ao débito automático e migração anual.\n"
+        "4. Mensurar uplift e ROI com grupo de controle."
+    ),
+]
+
+notebook = {
+    "cells": cells,
+    "metadata": {
+        "kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"},
+        "language_info": {"name": "python", "version": "3.11"},
+    },
+    "nbformat": 4,
+    "nbformat_minor": 5,
+}
+
+output = Path("notebooks/01_churn_analysis.ipynb")
+output.parent.mkdir(parents=True, exist_ok=True)
+output.write_text(json.dumps(notebook, ensure_ascii=False, indent=2), encoding="utf-8")
+print(f"Created {output}")
