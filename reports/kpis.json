@@ -1,0 +1,22 @@
+{
+  "summary": {
+    "customers": 5000,
+    "churned_customers": 1204,
+    "churn_rate": 0.2408,
+    "active_mrr": 354311.56,
+    "annual_revenue_at_risk": 1422541.32,
+    "average_nps": 7.023,
+    "average_tenure_months": 28.3188,
+    "high_risk_active_customers": 769
+  },
+  "churn_by_contract": {
+    "Mensal": 31.3725,
+    "Anual": 14.9647,
+    "Bienal": 14.2633
+  },
+  "churn_by_risk_segment": {
+    "Baixo": 10.1357,
+    "Médio": 22.313,
+    "Alto": 40.8462
+  }
+}

@@ -1,0 +1,21 @@
+feature,coefficient
+categorical__contract_Mensal,0.9932787347955857
+categorical__auto_pay_Sim,-0.5769000752053183
+categorical__plan_Premium,-0.4855711411329011
+numeric__nps,-0.4395935693073587
+numeric__last_login_days,0.3235377262665418
+numeric__monthly_charges,0.30813895046114403
+categorical__region_Sul,0.28665073709448874
+numeric__support_tickets,0.2446020286852485
+categorical__region_Sudeste,0.23006064566928938
+categorical__region_Nordeste,0.20873780841817774
+numeric__usage_hours,-0.15237657631217175
+numeric__late_payments,0.1416568484837328
+categorical__payment_method_Débito automático,0.12470889179624199
+categorical__region_Norte,0.08596473218586898
+numeric__tenure_months,-0.07055881874822766
+categorical__contract_Bienal,-0.061688821931590906
+categorical__payment_method_Pix,0.05582621643754247
+categorical__plan_Padrão,-0.049173883525259164
+numeric__age,0.020591993262544028
+categorical__payment_method_Cartão,-0.007086900087594096
